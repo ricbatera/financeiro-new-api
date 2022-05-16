@@ -10,18 +10,21 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 @Entity
 @EqualsAndHashCode
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Saida {
 	@Id
 	@EqualsAndHashCode.Include
@@ -42,6 +45,11 @@ public class Saida {
 	
 	@OneToMany(mappedBy = "saida", cascade = CascadeType.ALL)
 	private List<Parcela> parcelas;
+	
+	@PrePersist
+	public void setaEntradaSaidaNaLista() {
+		parcelas.forEach(i -> i.setSaida(this));
+	}
 	
 	
 
