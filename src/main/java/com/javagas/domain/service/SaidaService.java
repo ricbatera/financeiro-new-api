@@ -6,11 +6,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.javagas.domain.SaidaDTO;
 import com.javagas.domain.model.Parcela;
 import com.javagas.domain.model.Saida;
 import com.javagas.domain.repository.CategoriaRepository;
@@ -31,12 +33,28 @@ public class SaidaService {
 	@Autowired
 	private SaidaRepository saidaRepository;
 	
-	public List<Saida> listarMensal(String dataBase) {
+	public List<SaidaDTO> listarMensal(String dataBase) {
 		LocalDate dataRecebida = LocalDate.parse(dataBase);
 		LocalDate primeiroDiaDoMes = Utilitarios.primeiroDiaMes(dataRecebida);
 		LocalDate ultimoDiaDoMes = Utilitarios.ultimoDiaMes(dataRecebida);
-//		return saidaRepository.findAll();
-		return saidaRepository.findByParcelasDataVencimentoBetween(primeiroDiaDoMes, ultimoDiaDoMes);
+		List<SaidaDTO> responseList = new ArrayList<>();		
+		List<Saida> lista = saidaRepository.findByParcelasDataVencimentoBetween(primeiroDiaDoMes, ultimoDiaDoMes);
+		for(Saida saida : lista) {
+			List<Parcela> parcelas = saida.getParcelas();
+			Predicate<Parcela> filtro = p-> !((p.getDataVencimento().isAfter(primeiroDiaDoMes))&& (p.getDataVencimento().isBefore(ultimoDiaDoMes)));
+			parcelas.removeIf(filtro);
+			saida.setParcelas(parcelas);
+			
+			SaidaDTO saidaDto= new SaidaDTO();
+			saidaDto.setDescricao(saida.getDescricao());
+			saidaDto.setId(saida.getId());
+			saidaDto.setParcela(saida.getParcelas().get(0));
+			saidaDto.setSituacao(setaSituacao(saida.getParcelas().get(0)));
+			responseList.add(saidaDto);			
+		}
+		
+		
+		return responseList;
 	}
 	
 	public void novaSaida(SaidaRequest saida) {
@@ -79,6 +97,14 @@ public class SaidaService {
 		vencimentoCalendar.set(Calendar.MONTH, mes);
 		vencimentoCalendar.set(Calendar.YEAR, ano);
 		return vencimentoCalendar;
+	}
+	
+	private String setaSituacao(Parcela parcela) {
+		if(parcela.getDataVencimento().isBefore(LocalDate.now()) && parcela.getStatus().equals("Aberto")) {
+			return "Atrasado";
+		}else {
+			return parcela.getStatus();
+		}
 	}
 
 }

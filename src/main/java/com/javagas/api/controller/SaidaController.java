@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.javagas.domain.SaidaDTO;
 import com.javagas.domain.model.Saida;
 import com.javagas.domain.request.SaidaRequest;
 import com.javagas.domain.service.SaidaService;
@@ -31,7 +32,7 @@ public class SaidaController {
 	}
 	
 	@GetMapping("/listarMensal")
-	public List<Saida> listarMensal(@Param(value="dataBase") String dataBase){
+	public List<SaidaDTO> listarMensal(@Param(value="dataBase") String dataBase){
 		System.out.println(dataBase);
 		return saidaService.listarMensal(dataBase);	
 	}
