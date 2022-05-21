@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -42,7 +44,7 @@ public class Saida {
 	private Categoria categoriaId;
 	@ManyToOne
 	private EmpresasJavaGas empresaId;
-	
+	@JsonManagedReference
 	@OneToMany(mappedBy = "saida", cascade = CascadeType.ALL)
 	private List<Parcela> parcelas;
 	

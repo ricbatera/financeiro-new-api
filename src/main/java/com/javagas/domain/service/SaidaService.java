@@ -17,6 +17,7 @@ import com.javagas.domain.repository.CategoriaRepository;
 import com.javagas.domain.repository.EmpresasJavaRepository;
 import com.javagas.domain.repository.SaidaRepository;
 import com.javagas.domain.request.SaidaRequest;
+import com.javagas.util.Utilitarios;
 
 @Service
 public class SaidaService {
@@ -29,6 +30,14 @@ public class SaidaService {
 	
 	@Autowired
 	private SaidaRepository saidaRepository;
+	
+	public List<Saida> listarMensal(String dataBase) {
+		LocalDate dataRecebida = LocalDate.parse(dataBase);
+		LocalDate primeiroDiaDoMes = Utilitarios.primeiroDiaMes(dataRecebida);
+		LocalDate ultimoDiaDoMes = Utilitarios.ultimoDiaMes(dataRecebida);
+//		return saidaRepository.findAll();
+		return saidaRepository.findByParcelasDataVencimentoBetween(primeiroDiaDoMes, ultimoDiaDoMes);
+	}
 	
 	public void novaSaida(SaidaRequest saida) {
 		Saida novaSaida = new Saida();
