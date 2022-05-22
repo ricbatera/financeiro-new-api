@@ -46,6 +46,7 @@ public class SaidaService {
 		response.setQtdeParcelas(contaPArcelas(response.getParcelas()));
 		response.setParcelasPagas(contaParcelasPagas(response.getParcelas()));
 		response.setParcelasAbertas(contaParcelasAbertas(response.getParcelas()));
+		response.setParcelaAtual(getParcelaAtual(response.getParcelas()));
 		return response;
 	}
 	
@@ -172,6 +173,18 @@ public class SaidaService {
 		parcelas.forEach(e -> calcList.add(e));
 		calcList.removeIf(p-> p.getStatus().equals("Pago"));
 		return calcList.stream().count();
+	}
+	
+	private Parcela getParcelaAtual(List<Parcela> parcelas) {
+		LocalDate hoje = LocalDate.now();
+		LocalDate primeiroDiaDoMes = Utilitarios.primeiroDiaMes(hoje);
+		LocalDate ultimoDiaDoMes = Utilitarios.ultimoDiaMes(hoje);
+		List<Parcela> calcList = new ArrayList<>();
+		parcelas.forEach(e -> calcList.add(e));	
+		Predicate<Parcela> filtro = p-> !((p.getDataVencimento().isAfter(primeiroDiaDoMes))&& (p.getDataVencimento().isBefore(ultimoDiaDoMes)));
+		calcList.removeIf(filtro);
+		calcList.get(0).setStatus(setaSituacao(calcList.get(0)));
+		return calcList.get(0);
 	}
 
 }

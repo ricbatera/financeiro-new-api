@@ -27,5 +27,6 @@ public class SaidaIdDTO {
 	private Long qtdeParcelas;
 	private Long parcelasPagas;
 	private Long parcelasAbertas;
+	private Parcela parcelaAtual;
 	
 }
