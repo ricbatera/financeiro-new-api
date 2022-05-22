@@ -48,7 +48,10 @@ public class SaidaService {
 			SaidaDTO saidaDto= new SaidaDTO();
 			saidaDto.setDescricao(saida.getDescricao());
 			saidaDto.setId(saida.getId());
-			saidaDto.setParcela(saida.getParcelas().get(0));
+//			saidaDto.setParcela(saida.getParcelas().get(0));
+			saidaDto.setVencimento(saida.getParcelas().get(0).getDataVencimento());
+			saidaDto.setValor(saida.getParcelas().get(0).getValorEsperado());
+			saidaDto.setIdParcelaAtual(saida.getParcelas().get(0).getId());
 			saidaDto.setSituacao(setaSituacao(saida.getParcelas().get(0)));
 			responseList.add(saidaDto);			
 		}
