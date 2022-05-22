@@ -1,4 +1,4 @@
-package com.javagas.domain;
+package com.javagas.domain.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

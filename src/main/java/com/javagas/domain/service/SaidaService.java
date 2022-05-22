@@ -12,7 +12,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.javagas.domain.SaidaDTO;
+import com.javagas.domain.dto.SaidaDTO;
+import com.javagas.domain.dto.SaidaIdDTO;
+import com.javagas.domain.mapper.SaidaMapper;
 import com.javagas.domain.model.Parcela;
 import com.javagas.domain.model.Saida;
 import com.javagas.domain.repository.CategoriaRepository;
@@ -32,6 +34,20 @@ public class SaidaService {
 	
 	@Autowired
 	private SaidaRepository saidaRepository;
+	
+	@Autowired
+	private SaidaMapper saidaMapper;
+	
+	public SaidaIdDTO getSaidaById(Long id){
+		SaidaIdDTO response = saidaMapper.saidaToDto(saidaRepository.findById(id).get());
+		response.setValorTotal(calculaValorTotal(response.getParcelas()));
+		response.setTotalPago(calculaValorPago(response.getParcelas()));
+		response.setTotalAberto(calculaValorAberto(response.getParcelas()));
+		response.setQtdeParcelas(contaPArcelas(response.getParcelas()));
+		response.setParcelasPagas(contaParcelasPagas(response.getParcelas()));
+		response.setParcelasAbertas(contaParcelasAbertas(response.getParcelas()));
+		return response;
+	}
 	
 	public List<SaidaDTO> listarMensal(String dataBase) {
 		LocalDate dataRecebida = LocalDate.parse(dataBase);
@@ -108,6 +124,54 @@ public class SaidaService {
 		}else {
 			return parcela.getStatus();
 		}
+	}
+	
+	private BigDecimal calculaValorTotal(List<Parcela> parcelas) {
+		List<BigDecimal> valores = new ArrayList<>();
+		for(Parcela parcela : parcelas) {
+			valores.add(parcela.getValorEsperado());
+		}
+		return valores.stream().reduce(new BigDecimal(0), (x ,y) -> y.add(x));
+	}
+	
+	private BigDecimal calculaValorPago(List<Parcela> parcelas) {
+		List<Parcela> calcList = new ArrayList<>();
+		parcelas.forEach(e -> calcList.add(e));
+		calcList.removeIf(p-> p.getStatus().equals("Aberto"));
+		List<BigDecimal> valores = new ArrayList<>();
+		for(Parcela parcela : calcList) {
+			valores.add(parcela.getValorEsperado());
+		}
+		return valores.stream().reduce(new BigDecimal(0), (x ,y) -> y.add(x));
+	}
+	
+	private BigDecimal calculaValorAberto(List<Parcela> parcelas) {
+		List<Parcela> calcList = new ArrayList<>();
+		parcelas.forEach(e -> calcList.add(e));
+		calcList.removeIf(p-> p.getStatus().equals("Pago"));
+		List<BigDecimal> valores = new ArrayList<>();
+		for(Parcela parcela : calcList) {
+			valores.add(parcela.getValorEsperado());
+		}
+		return valores.stream().reduce(new BigDecimal(0), (x ,y) -> y.add(x));
+	}
+	
+	private Long contaPArcelas(List<Parcela> parcelas) {
+		return parcelas.stream().count();
+	}
+	
+	private Long contaParcelasPagas(List<Parcela> parcelas) {
+		List<Parcela> calcList = new ArrayList<>();
+		parcelas.forEach(e -> calcList.add(e));
+		calcList.removeIf(p-> p.getStatus().equals("Aberto"));
+		return calcList.stream().count();
+	}
+	
+	private Long contaParcelasAbertas(List<Parcela> parcelas) {
+		List<Parcela> calcList = new ArrayList<>();
+		parcelas.forEach(e -> calcList.add(e));
+		calcList.removeIf(p-> p.getStatus().equals("Pago"));
+		return calcList.stream().count();
 	}
 
 }
