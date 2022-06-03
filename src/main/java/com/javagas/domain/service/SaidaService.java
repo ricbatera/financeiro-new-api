@@ -19,7 +19,9 @@ import com.javagas.domain.model.Parcela;
 import com.javagas.domain.model.Saida;
 import com.javagas.domain.repository.CategoriaRepository;
 import com.javagas.domain.repository.EmpresasJavaRepository;
+import com.javagas.domain.repository.ParcelaRepository;
 import com.javagas.domain.repository.SaidaRepository;
+import com.javagas.domain.request.ParcelaRequest;
 import com.javagas.domain.request.SaidaRequest;
 import com.javagas.util.Utilitarios;
 
@@ -37,6 +39,9 @@ public class SaidaService {
 	
 	@Autowired
 	private SaidaMapper saidaMapper;
+	
+	@Autowired
+	private ParcelaRepository parcelaRepository;
 	
 	public SaidaIdDTO getSaidaById(Long id){
 		SaidaIdDTO response = saidaMapper.saidaToDto(saidaRepository.findById(id).get());
@@ -172,7 +177,7 @@ public class SaidaService {
 		List<Parcela> calcList = new ArrayList<>();
 		parcelas.forEach(e -> calcList.add(e));
 		calcList.removeIf(p-> p.getStatus().equals("Pago"));
-		return calcList.stream().count();
+		return calcList.stream().count(); 
 	}
 	
 	private Parcela getParcelaAtual(List<Parcela> parcelas) {
@@ -185,6 +190,13 @@ public class SaidaService {
 		calcList.removeIf(filtro);
 		calcList.get(0).setStatus(setaSituacao(calcList.get(0)));
 		return calcList.get(0);
+	}
+	
+	public void pagarParcela(ParcelaRequest parcela, Long id) {
+		Parcela parcelaOnDataBase = parcelaRepository.getById(id);
+		BeanUtils.copyProperties(parcela, parcelaOnDataBase);
+		parcelaOnDataBase.setStatus("Pago");
+		parcelaRepository.save(parcelaOnDataBase);
 	}
 
 }

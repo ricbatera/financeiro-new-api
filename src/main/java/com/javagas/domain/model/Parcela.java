@@ -49,4 +49,14 @@ public class Parcela {
 	
 	private String status = "Aberto";
 
+
+	@Override
+	public String toString() {
+		return "Parcela [id=" + id + ", dataVencimento=" + dataVencimento + ", dataPagamento=" + dataPagamento
+				+ ", valorEsperado=" + valorEsperado + ", valorEfetivo=" + valorEfetivo
+				+ ", status=" + status + "]";
+	}
+	
+	
+
 }
