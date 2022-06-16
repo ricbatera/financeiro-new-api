@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto11
+  pre_build:
+    commands:
+      - echo Nada a fazer na fase pre_build...
+  build:
+    commands:
+      - echo Build iniciado em `date`
+      - mvn install
+  post_build:
+    commands:
+      - echo Build completo em `date`
+artifacts:
+  files:
+    - target/backend-financeiro-0.0.1-SNAPSHOT.jar
