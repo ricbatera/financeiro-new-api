@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto11
+  pre_build:
+    commands:
+      - echo Fazendo login no docker hub...
+      - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+  build:
+    commands:
+      - echo Build iniciado em `date`
+      - mvn clean install
+      - docker built -t $DOCKER_USERNAME/new-api:latest .
+      - docker push $DOCKER_USERNAME/new-api:latest
+  post_build:
+    commands:
+      - echo Build completo em `date`
+artifacts:
+  files:
+    - target/backend-financeiro-0.0.1-SNAPSHOT.jar
