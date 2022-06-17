@@ -12,7 +12,7 @@ phases:
     commands:
       - echo Build iniciado em `date`
       - mvn clean install
-      - docker built -t $DOCKER_USERNAME/new-api:latest .
+      - docker build -t $DOCKER_USERNAME/new-api:latest .
       - docker push $DOCKER_USERNAME/new-api:latest
   post_build:
     commands:
