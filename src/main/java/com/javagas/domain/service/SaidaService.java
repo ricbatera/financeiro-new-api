@@ -75,6 +75,7 @@ public class SaidaService {
 			saidaDto.setValor(saida.getParcelas().get(0).getValorEsperado());
 			saidaDto.setIdParcelaAtual(saida.getParcelas().get(0).getId());
 			saidaDto.setSituacao(setaSituacao(saida.getParcelas().get(0)));
+			saidaDto.setEmpresa(saida.getEmpresaId().getEmpresa());
 			responseList.add(saidaDto);			
 		}
 		

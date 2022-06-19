@@ -17,5 +17,6 @@ public class SaidaDTO {
 	private BigDecimal valor;
 	private String situacao;
 	private Long idParcelaAtual;
+	private String empresa;
 
 }
