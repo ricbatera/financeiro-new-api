@@ -43,6 +43,8 @@ public class SaidaService {
 	@Autowired
 	private ParcelaRepository parcelaRepository;
 	
+	private LocalDate dataRecebida;
+	
 	public SaidaIdDTO getSaidaById(Long id){
 		SaidaIdDTO response = saidaMapper.saidaToDto(saidaRepository.findById(id).get());
 		response.setValorTotal(calculaValorTotal(response.getParcelas()));
@@ -56,7 +58,7 @@ public class SaidaService {
 	}
 	
 	public List<SaidaDTO> listarMensal(String dataBase) {
-		LocalDate dataRecebida = LocalDate.parse(dataBase);
+		dataRecebida = LocalDate.parse(dataBase);
 		LocalDate primeiroDiaDoMes = Utilitarios.primeiroDiaMes(dataRecebida);
 		LocalDate ultimoDiaDoMes = Utilitarios.ultimoDiaMes(dataRecebida);
 		List<SaidaDTO> responseList = new ArrayList<>();		
@@ -182,9 +184,9 @@ public class SaidaService {
 	}
 	
 	private Parcela getParcelaAtual(List<Parcela> parcelas) {
-		LocalDate hoje = LocalDate.now();
-		LocalDate primeiroDiaDoMes = Utilitarios.primeiroDiaMes(hoje);
-		LocalDate ultimoDiaDoMes = Utilitarios.ultimoDiaMes(hoje);
+//		LocalDate hoje = LocalDate. (dataRecebida);
+		LocalDate primeiroDiaDoMes = Utilitarios.primeiroDiaMes(dataRecebida);
+		LocalDate ultimoDiaDoMes = Utilitarios.ultimoDiaMes(dataRecebida);
 		List<Parcela> calcList = new ArrayList<>();
 		parcelas.forEach(e -> calcList.add(e));	
 		Predicate<Parcela> filtro = p-> !((p.getDataVencimento().isAfter(primeiroDiaDoMes))&& (p.getDataVencimento().isBefore(ultimoDiaDoMes)));
