@@ -19,6 +19,7 @@ import com.javagas.domain.model.Parcela;
 import com.javagas.domain.model.Saida;
 import com.javagas.domain.repository.CategoriaRepository;
 import com.javagas.domain.repository.EmpresasJavaRepository;
+import com.javagas.domain.repository.ObraRepository;
 import com.javagas.domain.repository.ParcelaRepository;
 import com.javagas.domain.repository.SaidaRepository;
 import com.javagas.domain.request.AtualizaSaidaRequest;
@@ -43,6 +44,9 @@ public class SaidaService {
 	
 	@Autowired
 	private ParcelaRepository parcelaRepository;
+	
+	@Autowired
+	private ObraRepository obraRepository;
 	
 	private LocalDate dataRecebida;
 	
@@ -91,6 +95,7 @@ public class SaidaService {
 		BeanUtils.copyProperties(saida, novaSaida);
 		novaSaida.setCategoriaId(categoriaRepo.findById(saida.getCategoriaId()).get());
 		novaSaida.setEmpresaId(empresasRepo.findById(saida.getEmpresaId()).get());
+		novaSaida.setObraId(obraRepository.getById(saida.getObraId()));
 		novaSaida.setParcelas(gerarParcelas(saida.getQtdeParcelas(), saida.getDataVencimento(), saida.getValorEsperado(), saida.getPago()));
 		saidaRepository.save(novaSaida);
 		System.out.println(novaSaida.getParcelas());

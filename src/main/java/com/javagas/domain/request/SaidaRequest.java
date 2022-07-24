@@ -20,5 +20,6 @@ public class SaidaRequest {
 	private Long categoriaId;
 	private String obs;
 	private BigDecimal valorEsperado;
+	private Long obraId;
 
 }

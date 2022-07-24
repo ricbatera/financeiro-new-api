@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.javagas.domain.model.Categoria;
 import com.javagas.domain.model.EmpresasJavaGas;
+import com.javagas.domain.model.Obra;
 import com.javagas.domain.model.Parcela;
 
 import lombok.Data;
@@ -19,6 +20,7 @@ public class SaidaIdDTO {
 	private Categoria categoriaId;	
 	private EmpresasJavaGas empresaId;	
 	private List<Parcela> parcelas;
+	private Obra obraId;
 	
 	//campos calculados
 	private BigDecimal valorTotal;

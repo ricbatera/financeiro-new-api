@@ -44,6 +44,8 @@ public class Saida {
 	private Categoria categoriaId;
 	@ManyToOne
 	private EmpresasJavaGas empresaId;
+	@ManyToOne
+	private Obra obraId;
 	@JsonManagedReference
 	@OneToMany(mappedBy = "saida", cascade = CascadeType.ALL)
 	private List<Parcela> parcelas;
