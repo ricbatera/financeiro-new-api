@@ -21,6 +21,7 @@ import com.javagas.domain.repository.CategoriaRepository;
 import com.javagas.domain.repository.EmpresasJavaRepository;
 import com.javagas.domain.repository.ParcelaRepository;
 import com.javagas.domain.repository.SaidaRepository;
+import com.javagas.domain.request.AtualizaSaidaRequest;
 import com.javagas.domain.request.ParcelaRequest;
 import com.javagas.domain.request.SaidaRequest;
 import com.javagas.util.Utilitarios;
@@ -200,6 +201,37 @@ public class SaidaService {
 		BeanUtils.copyProperties(parcela, parcelaOnDataBase);
 		parcelaOnDataBase.setStatus("Pago");
 		parcelaRepository.save(parcelaOnDataBase);
+	}
+
+	public void atualizarSaida(AtualizaSaidaRequest payload) {
+		Saida saidaAtual = saidaRepository.getById(payload.getId());
+		
+		for(Parcela parcela: saidaAtual.getParcelas()) {
+			if(parcela.getId() == payload.getIdParcelaAtual()) {
+				parcela.setDataVencimento(payload.getDataVencimento());
+				parcela.setValorEsperado(payload.getValorEsperado());
+			}
+			if(payload.getAtualizarValorParcelasFuturas()) {
+				parcela.setValorEsperado(payload.getValorEsperado());
+			}
+		}
+		
+		if(payload.getCategoriaId() != saidaAtual.getCategoriaId().getId()) {
+			saidaAtual.setCategoriaId(categoriaRepo.getById(payload.getCategoriaId()));
+		}
+		
+		if(payload.getEmpresaId() != saidaAtual.getEmpresaId().getId()) {
+			saidaAtual.setEmpresaId(empresasRepo.getById(payload.getEmpresaId()));
+		}
+		
+		if(payload.getDescricao() != saidaAtual.getDescricao()) {
+			saidaAtual.setDescricao(payload.getDescricao());
+		}
+		if(payload.getObs() != saidaAtual.getObs()) {
+			saidaAtual.setObs(payload.getObs());
+		}
+		
+		saidaRepository.save(saidaAtual);
 	}
 
 }

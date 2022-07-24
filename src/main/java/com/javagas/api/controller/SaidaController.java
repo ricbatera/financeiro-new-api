@@ -18,6 +18,7 @@ import com.javagas.domain.dto.SaidaDTO;
 import com.javagas.domain.dto.SaidaIdDTO;
 import com.javagas.domain.model.Parcela;
 import com.javagas.domain.model.Saida;
+import com.javagas.domain.request.AtualizaSaidaRequest;
 import com.javagas.domain.request.ParcelaRequest;
 import com.javagas.domain.request.SaidaRequest;
 import com.javagas.domain.service.SaidaService;
@@ -49,5 +50,10 @@ public class SaidaController {
 	@PutMapping("pagar-parcela/{id}")
 	public void pagarParcela(@RequestBody ParcelaRequest parcela, @PathVariable Long id) {
 		saidaService.pagarParcela(parcela, id);	
+	}
+	
+	@PutMapping("/atualizarSaida")
+	public void atualizarSaida(@RequestBody AtualizaSaidaRequest payload) {
+		saidaService.atualizarSaida(payload);
 	}
 }
